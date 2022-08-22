@@ -1,5 +1,6 @@
 import pathlib
 import GenerateData
+import DataPrediction
 import CreateDataFiles
 
 
@@ -11,8 +12,10 @@ def main():
     rawCopy = rawData.copy()
 
     CreateDataFiles.create_input_file(currentPath, rawCopy)
-    rawCopy = rawData.copy();
+    rawCopy = rawData.copy()
     CreateDataFiles.create_target_file(currentPath, rawCopy)
+
+    DataPrediction.predict_data(currentPath, rawData)
 
 if __name__ == '__main__':
     main()

@@ -10,7 +10,7 @@ warnings.filterwarnings('ignore')
 
 def generate_data(path):
     # Create a sample dataset with n samples
-    N_SAMPLES = 100
+    N_SAMPLES = 1000
     time = numpy.arange(0, N_SAMPLES, 0.1)
     # signal = numpy.sin(time)
     # Generate normally distributed random samples with two features
