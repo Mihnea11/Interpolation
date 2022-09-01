@@ -8,9 +8,9 @@ secondOperand = 0.62
 constant = 19.0
 
 
-def predict_data(path, rawData: pandas.DataFrame):
-    prediction = rawData.copy()
-    for i, rows in rawData.iterrows():
+def predict_dependence_data(path, raw_data: pandas.DataFrame):
+    prediction = raw_data.copy()
+    for i, rows in raw_data.iterrows():
         result = firstOperand * float(rows[1]) + secondOperand * float(rows[2]) + constant
         prediction.at[i, 0] = result
 
