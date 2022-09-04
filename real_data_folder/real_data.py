@@ -25,6 +25,12 @@ def real_data_interpolation():
 
 
 def find_success_rate(raw_data: pandas.DataFrame, prediction: pandas.DataFrame):
+    compare = create_real_data_comparison(raw_data, prediction)
+    rate = numpy.corrcoef(compare[0], compare[1])
+    return rate
+
+
+def create_real_data_comparison(raw_data: pandas.DataFrame, prediction: pandas.DataFrame):
     compare = pandas.DataFrame()
 
     raw_rows = raw_data['plasma_CA19_9'].tolist()
@@ -32,9 +38,8 @@ def find_success_rate(raw_data: pandas.DataFrame, prediction: pandas.DataFrame):
 
     length = len(raw_rows)
     for i in range(length):
-        if not(raw_rows[i] != raw_rows[i]):
+        if not (raw_rows[i] != raw_rows[i]):
             compare.at[i, 0] = raw_rows[i]
             compare.at[i, 1] = predicted_rows[i]
 
-    rate = numpy.corrcoef(compare[0], compare[1])
-    return rate
+    return compare

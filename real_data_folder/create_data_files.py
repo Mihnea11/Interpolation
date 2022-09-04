@@ -1,5 +1,6 @@
 import os
 import pandas
+import numpy
 
 
 def remove_nan_rows(raw_data):
@@ -21,6 +22,11 @@ def create_input_file(path, raw_data: pandas.DataFrame):
     new_data.drop('age', axis=1, inplace=True)
     new_data.drop('plasma_CA19_9', axis=1, inplace=True)
 
+    new_data['TFF1_log'] = numpy.log(new_data['TFF1'])
+    new_data.drop('TFF1', axis=1, inplace=True)
+    # new_data['REG1B_log'] = numpy.log(new_data['REG1B'])
+    # new_data.drop('REG1B', axis=1, inplace=True)
+
     new_data.to_csv(os.path.join(path, r'input.csv'), index=False)
 
 
@@ -34,4 +40,6 @@ def create_target_file(path, raw_data: pandas.DataFrame):
     new_data.drop('REG1B', axis=1, inplace=True)
     new_data.drop('TFF1', axis=1, inplace=True)
 
+    # new_data['plasma_CA19_9_log'] = numpy.log(new_data['plasma_CA19_9'])
+    # new_data.drop('plasma_CA19_9', axis=1, inplace=True)
     new_data.to_csv(os.path.join(path, r'target.csv'), index=False)
