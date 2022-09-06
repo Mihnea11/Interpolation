@@ -22,8 +22,6 @@ def create_input_file(path, raw_data: pandas.DataFrame):
     new_data.drop('age', axis=1, inplace=True)
     new_data.drop('plasma_CA19_9', axis=1, inplace=True)
 
-    new_data['TFF1_log'] = numpy.log(new_data['TFF1'])
-    new_data.drop('TFF1', axis=1, inplace=True)
     # new_data['REG1B_log'] = numpy.log(new_data['REG1B'])
     # new_data.drop('REG1B', axis=1, inplace=True)
 

@@ -7,21 +7,45 @@ import real_data_folder.create_data_files as create_data_files
 import real_data_folder.data_prediction as data_prediction
 
 
-def real_data_interpolation():
+def initial_setup():
     default_folder = "data"
     current_path = pathlib.Path(__file__).parent.resolve().joinpath(default_folder)
 
     input_data = pandas.read_csv(os.path.join(current_path, r'raw_data.csv'))
     raw_data = input_data[['age', 'plasma_CA19_9', 'creatinine', 'LYVE1', 'REG1B', 'TFF1']]
-    raw_copy = raw_data.copy()
 
+    raw_copy = raw_data.copy()
     create_data_files.create_input_file(current_path, raw_copy)
     raw_copy = raw_data.copy()
     create_data_files.create_target_file(current_path, raw_copy)
 
-    predicted = data_prediction.predict_dependence_data(current_path, raw_data)
+
+def real_data_interpolation_CMAGEP():
+    default_folder = "data"
+    current_path = pathlib.Path(__file__).parent.resolve().joinpath(default_folder)
+
+    input_data = pandas.read_csv(os.path.join(current_path, r'raw_data.csv'))
+    raw_data = input_data[['age', 'plasma_CA19_9', 'creatinine', 'LYVE1', 'REG1B', 'TFF1']]
+
+    predicted = data_prediction.predict_real_data_CMAGEP(current_path, raw_data)
 
     return find_success_rate(raw_data, predicted)
+
+
+def real_data_interpolation_SVM():
+    default_folder = "data"
+    current_path = pathlib.Path(__file__).parent.resolve().joinpath(default_folder)
+
+    input_data = pandas.read_csv(os.path.join(current_path, r'raw_data.csv'))
+    raw_data = input_data[['age', 'plasma_CA19_9', 'creatinine', 'LYVE1', 'REG1B', 'TFF1']]
+
+    predicted = data_prediction.predict_real_data_SVM(current_path, raw_data)
+
+    return find_success_rate(raw_data, predicted)
+
+
+def real_data_interpolation_KNN():
+    print('smth')
 
 
 def find_success_rate(raw_data: pandas.DataFrame, prediction: pandas.DataFrame):
