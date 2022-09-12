@@ -1,6 +1,5 @@
 import os
 import pandas
-import numpy
 
 
 def remove_nan_rows(raw_data):

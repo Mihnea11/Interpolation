@@ -1,10 +1,12 @@
-import os.path
-import pathlib
+import math
 import numpy
 import pandas
-
+import os.path
+import pathlib
 import real_data_folder.create_data_files as create_data_files
 import real_data_folder.data_prediction as data_prediction
+
+from sklearn.metrics import r2_score
 
 
 def initial_setup():
@@ -45,13 +47,57 @@ def real_data_interpolation_SVM():
 
 
 def real_data_interpolation_KNN():
-    print('smth')
+    default_folder = "data"
+    current_path = pathlib.Path(__file__).parent.resolve().joinpath(default_folder)
+
+    input_data = pandas.read_csv(os.path.join(current_path, r'raw_data.csv'))
+    raw_data = input_data[['age', 'plasma_CA19_9', 'creatinine', 'LYVE1', 'REG1B', 'TFF1']]
+
+    data_prediction.predict_real_data_KNN(current_path, raw_data)
+
+    predicted = data_prediction.predict_real_data_KNN(current_path, raw_data)
+
+    return find_success_rate(raw_data, predicted)
+
+
+def real_data_interpolation_RandomForest():
+    default_folder = "data"
+    current_path = pathlib.Path(__file__).parent.resolve().joinpath(default_folder)
+
+    input_data = pandas.read_csv(os.path.join(current_path, r'raw_data.csv'))
+    raw_data = input_data[['age', 'plasma_CA19_9', 'creatinine', 'LYVE1', 'REG1B', 'TFF1']]
+
+    data_prediction.predict_real_data_KNN(current_path, raw_data)
+
+    predicted = data_prediction.predict_real_data_RandomForest(current_path, raw_data)
+
+    return find_success_rate(raw_data, predicted)
 
 
 def find_success_rate(raw_data: pandas.DataFrame, prediction: pandas.DataFrame):
     compare = create_real_data_comparison(raw_data, prediction)
-    rate = numpy.corrcoef(compare[0], compare[1])
+    rate = r2_score(compare[0], compare[1])
+
     return rate
+
+
+def find_rmse(raw_data: pandas.DataFrame, prediction: pandas.DataFrame):
+    compare = create_real_data_comparison(raw_data, prediction)
+
+    y_actual = compare[0].tolist()
+    y_predicted = compare[1].tolist()
+
+    rmse = 0.0
+
+    i = 0
+    for i in range(len(y_actual)):
+        rmse = rmse + (y_predicted[i] - y_actual[i]) ** 2
+        i = i + 1
+
+    rmse = rmse / i
+    rmse = math.sqrt(rmse)
+
+    return rmse
 
 
 def create_real_data_comparison(raw_data: pandas.DataFrame, prediction: pandas.DataFrame):

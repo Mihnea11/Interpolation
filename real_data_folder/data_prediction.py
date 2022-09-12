@@ -2,7 +2,9 @@ import os
 import math
 import pandas
 
-from sklearn.svm import SVC
+from sklearn.svm import SVR
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.ensemble import RandomForestRegressor
 
 
 def predict_real_data_CMAGEP(path, raw_data: pandas.DataFrame):
@@ -23,18 +25,18 @@ def predict_real_data_SVM(path, raw_data: pandas.DataFrame):
     target = raw_data['plasma_CA19_9']
 
     x = pandas.read_csv(os.path.join(path, r'input.csv'))
-    y = []
+    y = pandas.read_csv(os.path.join(path, r'target.csv'))
 
-    i = 0
-    for element in target:
-        if not (element != element):
-            y.append(int(target[i]))
-
-        i = i + 1
+    #i = 0
+    #for element in target:
+    #    if not (element != element):
+    #        y.append(int(target[i]))
+    #    i = i + 1
 
     x = x.to_numpy()
+    y = y.to_numpy()
 
-    classifier = SVC(kernel='linear', random_state=0)
+    classifier = SVR(kernel='linear')
     classifier.fit(x, y)
 
     parameters = raw_data[['creatinine', 'LYVE1', 'REG1B', 'TFF1']]
@@ -52,4 +54,68 @@ def predict_real_data_SVM(path, raw_data: pandas.DataFrame):
 
 
 def predict_real_data_KNN(path, raw_data: pandas.DataFrame):
-    print("else")
+    prediction = raw_data.copy()
+
+    target = raw_data['plasma_CA19_9']
+
+    x = pandas.read_csv(os.path.join(path, r'input.csv'))
+    y = pandas.read_csv(os.path.join(path, r'target.csv'))
+
+    #i = 0
+    #for element in target:
+    #    if not (element != element):
+    #        y.append(int(target[i]))
+    #    i = i + 1
+
+    x = x.to_numpy()
+    y = y.to_numpy()
+
+    knn = KNeighborsRegressor(n_neighbors=3)
+    knn.fit(x, y)
+
+    parameters = raw_data[['creatinine', 'LYVE1', 'REG1B', 'TFF1']]
+    parameters.to_numpy()
+
+    y_predict = knn.predict(parameters)
+
+    i = 0
+    for element in y_predict:
+        prediction['plasma_CA19_9'][i] = element
+        i = i + 1
+
+    prediction.to_csv(os.path.join(path, r'prediction_KNN.csv'))
+    return prediction
+
+
+def predict_real_data_RandomForest(path, raw_data: pandas.DataFrame):
+    prediction = raw_data.copy()
+
+    target = raw_data['plasma_CA19_9']
+
+    x = pandas.read_csv(os.path.join(path, r'input.csv'))
+    y = pandas.read_csv(os.path.join(path, r'target.csv'))
+
+    #i = 0
+    #for element in target:
+    #    if not (element != element):
+    #        y.append(int(target[i]))
+    #    i = i + 1
+
+    x = x.to_numpy()
+    y = y.to_numpy()
+
+    regressor = RandomForestRegressor(n_estimators=20, max_depth=10, random_state=0)
+    regressor.fit(x, y)
+
+    parameters = raw_data[['creatinine', 'LYVE1', 'REG1B', 'TFF1']]
+    parameters.to_numpy()
+
+    y_predict = regressor.predict(parameters)
+
+    i = 0
+    for element in y_predict:
+        prediction['plasma_CA19_9'][i] = element
+        i = i + 1
+
+    prediction.to_csv(os.path.join(path, r'prediction_RandomForest.csv'))
+    return prediction
